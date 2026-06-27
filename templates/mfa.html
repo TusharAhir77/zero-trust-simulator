@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MFA Verification</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #00ff88;
+            width: 380px;
+            text-align: center;
+        }
+        h1 { color: #00ff88; margin-bottom: 8px; font-size: 22px; }
+        p  { color: #888; margin-bottom: 20px; font-size: 13px; }
+        .otp-hint {
+            background: #00ff8811;
+            border: 1px solid #00ff8844;
+            color: #00ff88;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            background: #0f0f23;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 8px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #00cc6a; }
+        .error {
+            background: #ff000022;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .back { color: #888; font-size: 12px; margin-top: 16px; }
+        .back a { color: #00ff88; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🔑 MFA Verification</h1>
+        <p>Welcome <strong style="color:white">{{ username }}</strong>!</p>
+        <p>Check your terminal for the OTP code</p>
 
+        <div class="otp-hint">
+    💡 Your OTP Code is:
+    <h2 style="font-size:32px; letter-spacing:8px; margin-top:8px;">
+        {{ current_otp }}
+    </h2>
+    <p style="font-size:11px; margin-top:4px;">⏱️ Valid for 30 seconds</p>
+</div>
+
+        <input type="text" id="otp"
+               placeholder="Enter OTP"
+               maxlength="6">
+
+        <button onclick="submitOTP()">✅ Verify OTP</button>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <p class="back"><a href="/">← Back to Login</a></p>
+    </div>
+
+    <script>
+        function submitOTP() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/mfa';
+            const o = document.createElement('input');
+            o.name = 'otp';
+            o.value = document.getElementById('otp').value;
+            form.appendChild(o);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>
