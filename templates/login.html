@@ -1,1 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zero Trust — Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #050510;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(#00ff8808 1px, transparent 1px),
+                linear-gradient(90deg, #00ff8808 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0%   { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        /* Glow orbs */
+        .orb1 {
+            position: fixed;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #00ff8822, transparent 70%);
+            top: -100px; left: -100px;
+            border-radius: 50%;
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .orb2 {
+            position: fixed;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #0044ff22, transparent 70%);
+            bottom: -50px; right: -50px;
+            border-radius: 50%;
+            animation: orbFloat 6s ease-in-out infinite reverse;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(30px, 30px); }
+        }
+
+        /* Main container */
+        .container {
+            display: flex;
+            z-index: 1;
+            width: 900px;
+            min-height: 520px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 0 80px #00ff8822, 0 0 0 1px #00ff8833;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #0a0a2e, #0d1a3e);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid #00ff8822;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px #00ff8866;
+        }
+
+        .logo-text h2 {
+            color: #00ff88;
+            font-size: 20px;
+            text-shadow: 0 0 10px #00ff8888;
+        }
+
+        .logo-text p {
+            color: #556;
+            font-size: 12px;
+        }
+
+        .left-content h1 {
+            color: white;
+            font-size: 32px;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .left-content h1 span {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff8888;
+        }
+
+        .left-content p {
+            color: #667;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #ffffff06;
+            border: 1px solid #ffffff0a;
+            border-radius: 10px;
+        }
+
+        .feature-icon {
+            font-size: 20px;
+            width: 36px;
+            text-align: center;
+        }
+
+        .feature-text strong {
+            display: block;
+            color: #ccc;
+            font-size: 13px;
+        }
+
+        .feature-text span {
+            color: #556;
+            font-size: 11px;
+        }
+
+        .left-footer {
+            color: #334;
+            font-size: 11px;
+            margin-top: 30px;
+        }
+
+        /* Right Panel - Login Form */
+        .right-panel {
+            width: 380px;
+            background: #0a0a1e;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel h2 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .right-panel > p {
+            color: #556;
+            font-size: 13px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #889;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #445;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 14px 14px 42px;
+            background: #050510;
+            border: 1px solid #223;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px #00ff8822;
+        }
+
+        .form-input::placeholder { color: #334; }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #050510;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px #00ff8844;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px #00ff8866;
+        }
+
+        .login-btn:active { transform: translateY(0); }
+
+        .error-box {
+            background: #ff444411;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            font-size: 13px;
+            text-align: center;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%       { transform: translateX(-8px); }
+            75%       { transform: translateX(8px); }
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #223;
+            margin: 24px 0;
+        }
+
+        .hint-title {
+            color: #445;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .hint-users {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hint-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #050510;
+            border: 1px solid #223;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hint-user:hover {
+            border-color: #00ff8844;
+            background: #00ff8808;
+        }
+
+        .hint-user-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hint-user-name { color: #aaa; font-size: 12px; font-weight: bold; }
+        .hint-user-pass { color: #445; font-size: 11px; }
+
+        .hint-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .badge-admin { background: #ff440022; color: #ff6600; border: 1px solid #ff440044; }
+        .badge-user  { background: #0088ff22; color: #00aaff; border: 1px solid #0088ff44; }
+        .badge-guest { background: #88888822; color: #aaaaaa; border: 1px solid #88888844; }
+
+        .click-hint {
+            color: #334;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="orb1"></div>
+    <div class="orb2"></div>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">🔐</div>
+                    <div class="logo-text">
+                        <h2>ZeroTrust</h2>
+                        <p>Network Simulator v1.0</p>
+                    </div>
+                </div>
+
+                <div class="left-content">
+                    <h1>Never Trust.<br><span>Always Verify.</span></h1>
+                    <p>A cybersecurity simulation of Zero Trust architecture — every user, device and request must be verified before gaining access.</p>
+
+                    <div class="features">
+                        <div class="feature-item">
+                            <div class="feature-icon">🔑</div>
+                            <div class="feature-text">
+                                <strong>Multi-Factor Authentication</strong>
+                                <span>OTP verification on every login</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-text">
+                                <strong>Role-Based Access Control</strong>
+                                <span>Policies enforced per user role</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📋</div>
+                            <div class="feature-text">
+                                <strong>Real-Time Audit Logs</strong>
+                                <span>Every access attempt is recorded</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left-footer">
+                IBM SkillBuild Internship — GTU Cybersecurity Project
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h2>Welcome Back 👋</h2>
+            <p>Sign in to access the Zero Trust dashboard</p>
+
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="username"
+                           class="form-input"
+                           placeholder="Enter your username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="password"
+                           class="form-input"
+                           placeholder="Enter your password">
+                </div>
+            </div>
+
+            <button class="login-btn" onclick="doLogin()">
+                🔐 Sign In Securely
+            </button>
+
+            {% if error %}
+            <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            <hr class="divider">
+
+            <p class="hint-title">Quick Login — Click to autofill</p>
+            <div class="hint-users">
+                <div class="hint-user" onclick="autofill('admin','admin123')">
+                    <div class="hint-user-left">
+                        <span>🔴</span>
+                        <div>
+                            <div class="hint-user-name">admin</div>
+                            <div class="hint-user-pass">admin123</div>
+                        </div>
+                    </div>
+                    <span class="hint-badge badge-admin">ADMIN</span>
+                </div>
+                <div class="hint-user" onclick="autofill('john','john123')">
+                    <div class="hint-user-left">
+                        <span>🔵</span>
+                        <div>
+                            <div class="hint-user-name">john</div>
+                            <div class="hint-user-pass">john123</div>
+                        </div>
+                    </div>
+                    <span class="hint-badge badge-user">USER</span>
+                </div>
+                <div class="hint-user" onclick="autofill('guest','guest123')">
+                    <div class="hint-user-left">
+                        <span>⚫</span>
+                        <div>
+                            <div class="hint-user-name">guest</div>
+                            <div class="hint-user-pass">guest123</div>
+                        </div>
+                    </div>
+                    <span class="hint-badge badge-guest">GUEST</span>
+                </div>
+            </div>
+            <p class="click-hint">💡 Click any user above to auto-fill credentials</p>
+        </div>
+    </div>
+
+    <script>
+        function autofill(user, pass) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+        }
+
+        function doLogin() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/';
+            const u = document.createElement('input');
+            u.name = 'username';
+            u.value = document.getElementById('username').value;
+            const p = document.createElement('input');
+            p.name = 'password';
+            p.value = document.getElementById('password').value;
+            form.appendChild(u);
+            form.appendChild(p);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Press Enter to login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+    </script>
+</body>
+</html>
