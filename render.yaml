@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: zero-trust-simulator
-    env: python
-    buildCommand: pip install flask flask-jwt-extended pyotp gunicorn Werkzeug
-    startCommand: python -m gunicorn app:app --bind 0.0.0.0:$PORT
